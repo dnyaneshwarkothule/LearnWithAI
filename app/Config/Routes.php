@@ -13,4 +13,7 @@ $routes->get('api/profile', 'Auth::profile');
 $routes->group('', ['filter' => 'jwtAuth'], function($routes) {
     $routes->get('api/exams', 'Exam::index');
     $routes->get('api/exams/(:num)', 'Exam::show/$1');
+
+    $routes->get('api/exam-questions', 'ExamQuestion::index');
+    $routes->post('api/exam-result/submit', 'ExamResult::submit');
 });
