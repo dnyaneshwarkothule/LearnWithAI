@@ -1,0 +1,5 @@
+# Prevent direct access to public_html folder
+RewriteEngine On
+
+# Redirect all requests to public folder
+RewriteRule ^(.*)$ public/$1 [L]
