@@ -11,8 +11,6 @@ $routes->get('api/profile', 'Auth::profile');
 
 // Protected routes
 $routes->group('', ['filter' => 'jwtAuth'], function($routes) {
-    $routes->get('exams', 'Exam::index');
-    $routes->get('exams/(:num)', 'Exam::show/$1');
+    $routes->get('api/exams', 'Exam::index');
+    $routes->get('api/exams/(:num)', 'Exam::show/$1');
 });
-
-
