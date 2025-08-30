@@ -16,41 +16,23 @@ class Exam extends ResourceController
         $category = $this->request->getGet('category') ?? '';
         $viewAll  = filter_var($this->request->getGet('viewAll') ?? false, FILTER_VALIDATE_BOOLEAN);
 
-        // --- Categories available ---
+        // --- Categories ---
         $categories = ["All Exams"];
-        $distinctCategories = $examModel->select('DISTINCT list_type')->findAll();
-
+        $distinctCategories = $examModel->getDistinctCategories();
         foreach ($distinctCategories as $row) {
             if (!empty($row['list_type'])) {
                 $categories[] = $row['list_type'];
             }
         }
 
-        // --- List Types ---
-        $listTypes = $examModel->select('DISTINCT list_type')->findColumn('list_type');
-
+        // --- Lists by type ---
         $lists = [];
+        $listTypes = $examModel->getListTypes();
+
         foreach ($listTypes as $lt) {
-            $builder = $examModel->where('list_type', $lt);
+            $rows = $examModel->getExamsByListType($lt, $search, $category, $viewAll);
 
-            // Apply search filter
-            if (!empty($search)) {
-                $builder = $builder->like('name', $search);
-            }
-
-            // Apply category filter
-            if (!empty($category) && $category !== "All Exams") {
-                $builder = $builder->where('type', $category);
-            }
-
-            // Limit if not viewAll
-            if (! $viewAll) {
-                $builder = $builder->limit(5);
-            }
-
-            $rows = $builder->find();
-
-            // Format response records
+            // Format response
             $exams = array_map(function ($row) {
                 return [
                     "id"        => $row["id"],
